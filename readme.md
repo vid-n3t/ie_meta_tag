@@ -1,4 +1,4 @@
-# D7 Custom Module Template: Add JS to a Form
+# D7 Custom Module Template: IE Meta Tag
 
 ## Contact
 
@@ -11,21 +11,13 @@
 * Drupal 7
 
 ## Purpose
-The d7_custom_mod_add_js_to_form module is a simple custom module that provides a js file for a specific form.
+The ie_meta_tag module injects the ie meta data into the documents html head.
 
-## Scope: What this module does
+## Scope: How and what this module does
 
-* Uses hook_form_alter to act on a specific form 
+* Uses hook_theme to inject the meta data when the theme data is being processed. 
 * Uses hook_help to provide information about the module to the site admin
-* Uses drupal_add_js to add a js file to the specified form
 * Uses drupal_set_message to push some debugging messages to the screen. These should be commented out on a live site
-* Includes some sample code for passing PHP vars to JS and using those vars in the js file
-* Includes some console logging in the js file
-
-## Out of Scope: What this module does not do
-
-* This module does not declare the js file in the .info file. We do not want to load this js file on every page
-* This module does not have an admin settings page
 
 ## Requirements
 
@@ -40,13 +32,6 @@ The d7_custom_mod_add_js_to_form module is a simple custom module that provides 
 
 ### In short:
 * Enable the module
-
-### To make this module your own: 
-* Rename the module directory to a new name
-* Rename all the files to match the new dir. name
-* Replace all references to "d7_custom_mod_add_js_to_form" in the files to your new name. 
-* Add your custom code
-* Deploy
 
 ## Git Repo Notes:
 * The master branch can only be written to by Vid. 

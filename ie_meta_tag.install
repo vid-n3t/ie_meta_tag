@@ -1,0 +1,16 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the ie_meta_tag module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ *
+ * @ingroup ie_meta_tag
+ */
+function ie_meta_tag_uninstall() {
+  variable_del('ie_meta_tag_enabled');
+  variable_del('ie_meta_tag_debug_message');
+  variable_del('ie_meta_tag_debug_reporting');
+}
