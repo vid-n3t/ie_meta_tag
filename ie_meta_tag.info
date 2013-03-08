@@ -1,0 +1,12 @@
+name = IE Meta Tag Injection (ie_meta_tag)
+description = This module injects an IE meta tag in to the page header.
+core = 7.x
+package = Custom
+;dependencies[] = 
+;files[] = 
+;stylesheets[all][] = 
+php = 5.1
+version = "7.x-1.0-beta-1.0"
+datestamp = "1344360383"
+; Change Log
+; v1.0beta-1.0 2013-3-8 New module. Vid

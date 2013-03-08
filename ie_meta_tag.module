@@ -1,0 +1,220 @@
+<?php
+// ie_meta_tag.module #D7
+
+/**
+Great discusion: http://stackoverflow.com/questions/6771258/whats-the-difference-if-meta-http-equiv-x-ua-compatible-content-ie-edge
+Inject 
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+or just use this (apache)
+Header set X-UA-Compatible "IE=Edge";
+or for (nginx)
+add_header X-UA-Compatible "IE=Edge";
+
+If you also want to allow users to leverage the IE chrome plug in, you could append ',chrome=1' to the above:
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+or just use this (apache)
+Header set X-UA-Compatible "IE=Edge,chrome=1";
+or for (nginx)
+add_header X-UA-Compatible "IE=Edge,chrome=1";
+*/
+
+##################################################################
+# Replace the theme tpl from attachment_links with the local one #
+##################################################################
+/**
+ * Implements hook_theme().
+ */
+function ie_meta_tag_theme($existing, $type, $theme, $path) {
+  if(variable_get('ie_meta_tag_enabled', TRUE)){
+				
+	}//end if(variable_get('ie_meta_tag_enabled', TRUE))
+}//function ie_meta_tag_theme
+
+
+###########################################################
+# Help                                                    #
+###########################################################
+/**
+ * Implements hook_help().
+ *
+ * Displays help and module information.
+ *
+ * @param path
+ *   Which path of the site we're using to display help.
+ * @param arg
+ *   Array that holds the current path as returned from arg() function.
+ */
+function ie_meta_tag_help($path, $arg) {
+  ie_meta_tag_debug_log('Running function ie_meta_tag_help');
+  switch ($path) {
+    case "admin/help#ie_meta_tag":
+      return '<p>' . t("Custom module to inject the ie-edge meta tag into the html header.") . '</p>';
+      break;
+  }
+}
+
+/**
+ * Page callback for admin/settings/peopleie_meta_tag.
+ *
+ * @see ie_meta_tag_menu()
+ */
+function ie_meta_tag_admin_settings($form, &$form_state) {
+  ie_meta_tag_debug_log('Running function ie_meta_tag_admin_settings');
+  // Checkbox to enable or disable the tab.
+  $form['ie_meta_tag_enabled'] = array(
+    '#type' => 'checkbox',
+    '#default_value' => variable_get('ie_meta_tag_enabled', TRUE),
+    '#title' => t('Enable tab'),
+    '#description' => t('Activate the IE Meta Tag functionality. Active by default'),
+  );
+
+  $form = array_merge($form, _ie_meta_tag_settings_form());
+  $form = array_merge($form, _ie_meta_tag_debug_form());
+
+  return system_settings_form($form);
+}
+
+/**
+ * Helper to produce ie_meta_tag settings configuration.
+ *
+ * These are the settings purely related to how javascript is configured
+ * and the text that is output.
+ */
+function _ie_meta_tag_settings_form() {
+  ie_meta_tag_debug_log('Running function _ie_meta_tag_settings_form');
+  //this could be used to add fields and settings. Like ie-8, 9, 10, ie-edge. Use chrome tag. Inject tag or use php Header
+  /*
+  $form['ie_meta_tag_...'] = array(
+    '#title' => t(''),
+    '#type' => 'textfield',
+    '#description' => t(''),
+  );
+  return $form;
+  */
+}
+
+/**
+ * Helper to produce ie_meta_tag debug configuration.
+ *
+ */
+function _ie_meta_tag_debug_form() {
+  ie_meta_tag_debug_log('Running function _ie_meta_tag_debug_form');
+  // Debugging - fieldset for debug related fields
+  $form['ie_meta_tag_debug'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Debugging'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+
+    $form['ie_meta_tag_debug']['ie_meta_tag_debug_message'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Enable debugging message feedback'),
+      '#description' => t('Displays feedback in Drupal Messages'),
+      '#default_value' => variable_get('ie_meta_tag_debug_message', FALSE),
+      '#required' => FALSE
+    );
+
+    $form['ie_meta_tag_debug']['ie_meta_tag_debug_reporting'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Enable watchdog debugging feedback'),
+      '#description' => t('Displays feedback messages in the Recent Log Entries (watchdog) Report'),
+      '#default_value' => variable_get('ie_meta_tag_debug_reporting', FALSE),
+      '#required' => FALSE
+    );
+
+  return $form;
+} //function _ie_meta_tag_debug_form()
+
+/**
+ * Helper to output debug messages.
+ *
+ * ie_meta_tag_debug_log($errMsgArr(array), [$errLabel(string)='ie_meta_tag', $errSeverity(string)='status|warning|error', $force(bool)=FALSE])
+ *
+ */
+function ie_meta_tag_debug_log($errMsgArr, $errLabel='ie_meta_tag', $errSeverity='status', $force=FALSE) {
+  $watchdog_levels=watchdog_severity_levels();
+  if ( $errMsgArr ) {
+    if ( ! is_array($errMsgArr) && $errMsgArr !== ""){
+      #$errMsgArr = implode(',', $errMsgArr);
+      $errMsgArr = array($errMsgArr);
+    }//end if ( ! is_array($errMsgArr) )
+    foreach ( $errMsgArr as $errMsg ) {
+      if ( variable_get('ie_meta_tag_debug_message', FALSE) || $force ){
+        drupal_set_message(t($errMsg), $errSeverity);
+      }//end if
+      if ( variable_get('ie_meta_tag_debug_reporting', FALSE) || $force ) {
+        #watchdog($errLabel,$errMsgArr);
+        watchdog($errLabel,$errMsg,array(),array_search($errSeverity,$watchdog_levels));
+      }//end if
+    }//end loop
+  }//end if $errMsgArr
+}//function _ie_meta_tag_debug_form()
+
+
+
+
+###########################################################
+# Control module run-time order                           #
+###########################################################
+/**
+ * Implementation of hook_module_implements_alter().
+ *
+ * @param $implementations: An array keyed by the module's name. The value of each item corresponds to a $group, which is usually FALSE, unless the implementation is in a file named $module.$group.inc.
+ * @param $hook: The name of the module hook being implemented.
+ * @return None.
+ *
+ * http://api.drupal.org/api/drupal/modules!system!system.api.php/function/hook_module_implements_alter/7
+ */
+/* Tests show this is un-needed
+function ie_meta_tag_module_implements_alter(&$implementations, $hook) {
+  //Any change here requires Caches to be cleared.
+  //http://www.rahulsingla.com/blog/2011/06/drupal-7-controlling-changing-order-of-execution-of-particular-hooks-for-modules
+  switch ($hook) {
+    case 'node_view': case 'theme': case 'theme_registry_alter':
+      $reorderCount = 0;
+      if(isset($implementations['attachment_links'])){
+        $attachment_links = $implementations['attachment_links'];
+        unset($implementations['attachment_links']);
+        $reorderCount ++;
+      }//end if(isset($implementations['ie_meta_tag']))
+
+      if(isset($implementations['ie_meta_tag'])){
+        $ie_meta_tag = $implementations['ie_meta_tag'];
+        unset($implementations['ie_meta_tag']);
+        $reorderCount ++;
+      }//end if(isset($implementations['ie_meta_tag']))
+
+      if($reorderCount > 1){
+        //these hooks would be called on module attachment_links before module ie_meta_tag.
+        $implementations['attachment_links'] = $attachment_links;
+        $implementations['ie_meta_tag'] = $ie_meta_tag;
+      }//end if($reorderCount > 1)
+      break;
+  }//end switch
+}//end function ie_meta_tag_module_implements_alter
+*/
+
+##############################################################
+# Theme Addition                                             #
+##############################################################
+/*
+ * This allows us to override the existing template file but still allow the user to override this override in their theme dir as ussual.
+ * Note: This relies on correctly naming the content-type.tpl.php file to override an existing content type. In this case the "attachment-links" type.
+ * Helpful url: http://shellmultimedia.com/articles/hookthemeregistryalter-advanced-template-control
+ */
+# Tests show this section is un-needed in d6... and likely d7 too
+/*
+function ie_meta_tag_theme_registry_alter(&$theme_registry) {
+  ie_meta_tag_debug_log('altering theme registry: ' . $theme_registry);
+  //ie_meta_tag_debug_log('$theme_registry[\'attachment_links\'] before: <pre>' . print_r($theme_registry['attachment_links'], true) . '</pre>');
+  // Get the path to this module
+  $modulepath = drupal_get_path('module', 'ie_meta_tag');
+  $themepath = $modulepath . '/templates';
+  //ie_meta_tag_debug_log('$themepath: ' . $themepath );
+  // Add the module path on top in the array of paths for module
+  # *D6 also used an array: $theme_registry['attachment_links']['theme paths'] but D7 just has the string: $theme_registry['attachment_links']['theme path']
+  $theme_registry['attachment_links']['theme path'] = $themepath;
+  ie_meta_tag_debug_log('$theme_registry[\'attachment_links\'] after: <pre>' . print_r($theme_registry['attachment_links'], true) . '</pre>');
+}//function ie_meta_tag_theme_registry_alter(&$theme_registry)
+*/
