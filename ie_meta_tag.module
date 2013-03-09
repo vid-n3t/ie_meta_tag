@@ -18,27 +18,46 @@ or for (nginx)
 add_header X-UA-Compatible "IE=Edge,chrome=1";
 */
 
-##################################################################
-# Replace the theme tpl from attachment_links with the local one #
-##################################################################
+#############################
+# Inject the head meta data #
+#############################
 /**
- * Implements hook_theme().
+ * Preprocesses the wrapping HTML.
+ *
+ * @param array &$variables
+ *   Template variables.
+ * ref: http://api.drupal.org/comment/18004#comment-18004
  */
-function ie_meta_tag_theme($existing, $type, $theme, $path) {
-  if(variable_get('ie_meta_tag_enabled', TRUE)){
-    /*
-      - Check for what type of method to use when appending the head (tag insertion or php apache Header || nginx add_header
-      - Check for version of ie to use
-      - Check for chome option
+if(variable_get('ie_meta_tag_enabled', TRUE)){
+  function ie_meta_tag_preprocess_html(&$vars) {
+    // Setup IE meta tag to force IE rendering mode
+    $ie_meta_tag_render = array(
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'content' =>  'IE=edge,chrome=1',
+        'http-equiv' => 'X-UA-Compatible',
+      ),
+      '#weight' => '-99999',
+    );
+    // Add header meta tag for IE to head
+    drupal_add_html_head($ie_meta_tag_render, 'ie_meta_tag_render');
+  }//end function ie_meta_tag_preprocess_html(&$vars)
 
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />//,chrome=1
-      or just use this (apache)
-      Header set X-UA-Compatible "IE=Edge";//,chrome=1
-      or for (nginx)
-      add_header X-UA-Compatible "IE=Edge";//,chrome=1
-    */
-  }//end if(variable_get('ie_meta_tag_enabled', TRUE))
-}//function ie_meta_tag_theme
+/*
+  - Check for what type of method to use when appending the head (tag insertion or php apache Header || nginx add_header
+  - Check for version of ie to use
+  - Check for chome option
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />//,chrome=1
+  or just use this (apache)
+  Header set X-UA-Compatible "IE=Edge";//,chrome=1
+  or for (nginx)
+  add_header X-UA-Compatible "IE=Edge";//,chrome=1
+*/
+
+
+}//end if(variable_get('ie_meta_tag_enabled', TRUE))
 
 
 ###########################################################
@@ -75,7 +94,7 @@ function ie_meta_tag_admin_settings($form, &$form_state) {
     '#type' => 'checkbox',
     '#default_value' => variable_get('ie_meta_tag_enabled', TRUE),
     '#title' => t('Enable tab'),
-    '#description' => t('Activate the IE Meta Tag functionality. Active by default'),
+    '#description' => t('Activate the IE Meta Tag functionality. Active by default when enabled. You may not want this active if your theme already provides this functionality.'),
   );
 
   $form = array_merge($form, _ie_meta_tag_settings_form());
@@ -92,16 +111,62 @@ function ie_meta_tag_admin_settings($form, &$form_state) {
  */
 function _ie_meta_tag_settings_form() {
   ie_meta_tag_debug_log('Running function _ie_meta_tag_settings_form');
-  //this could be used to add fields and settings. Like ie-8, 9, 10, ie-edge. Use chrome tag. Inject tag or use php Header
-  /*
-  $form['ie_meta_tag_...'] = array(
-    '#title' => t(''),
-    '#type' => 'textfield',
-    '#description' => t(''),
+
+  $form['ie_meta_tag_method'] = array(
+    '#type' => 'select',
+    '#title' => t('Injection Method'),
+    '#options' => array(
+      'meta_tag' => t('Inject IE meta tag'),
+      1 => t('Use Apache Header method'),
+      2 => t('Use nginx add_header method'),
+    ),
+    '#default_value' => variable_get('ie_meta_tag_method', 0),
+    '#description' => t('Choose the type of method to use when affecting the html head'),
   );
+
+  $form['ie_meta_tag_ie_flavor'] = array(
+    '#type' => 'select',
+    '#title' => t('IE Flavor of Choice'),
+    '#options' => array(
+      0 => t('IE=edge'),
+      1 => t('IE=10'),
+      2 => t('IE=EmulateIE10'),
+      3 => t('IE=9'),
+      4 => t('IE=EmulateIE9'),
+      5 => t('IE=8'),
+      6 => t('IE=EmulateIE8'),
+      7 => t('IE=7'),
+      8 => t('IE=EmulateIE7'),
+      9 => t('IE=5'),
+    ),
+    '#default_value' => variable_get('ie_meta_tag_ie_flavor', 0),
+    '#description' => t('Choose the flavor of IE tag to update the html head. ' . l(t('Interesting on stackoverflow'), 'http://stackoverflow.com/questions/6771258/whats-the-difference-if-meta-http-equiv-x-ua-compatible-content-ie-edge', array('attributes' => array('target'=>'_blank')))),
+  );
+
+  $form['ie_meta_tag_ie_chrome_option'] = array(
+    '#type' => 'select',
+    '#title' => t('Chrome Option'),
+    '#options' => array(
+      0 => t('None'),
+      1 => t('chrome=1   - Always active'),
+      2 => t('chrome=IE7 - Active for IE major version 7 or lower'),
+      3 => t('chrome=IE8 - Active for IE major version 8 or lower'),
+    ),
+    '#default_value' => variable_get('ie_meta_tag_ie_chrome_option', 0),
+    '#description' => t('Choose a chome option or leave it set to none. ' . l(t('More info on chromium.org'), 'http://www.chromium.org/developers/how-tos/chrome-frame-getting-started', array('attributes' => array('target'=>'_blank')))),
+  );
+
+  $form['ie_meta_tag_weight'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Weight'),
+    '#default_value' => variable_get('ie_meta_tag_weight','-99999'),
+    '#description' => t('Choose the weight of the meta tag. Choose a positive or negative number (integer or decimal). Some experience suggests that this tag must be the first one for it to be effective. The Default is -99999.'),
+    '#size' => 10,
+    '#element_validate' => array('_ie_meta_tag_weight_is_numeric'),
+  );
+
   return $form;
-  */
-}
+}//end function _ie_meta_tag_settings_form()
 
 /**
  * Helper to produce ie_meta_tag debug configuration.
@@ -162,6 +227,18 @@ function ie_meta_tag_debug_log($errMsgArr, $errLabel='ie_meta_tag', $errSeverity
 }//function _ie_meta_tag_debug_form()
 
 
+
+###########################################################
+# Validation Functions                                    #
+###########################################################
+/**
+ * function _ie_meta_tag_is_numeric($element, &$form_state)
+ * Validate if an entry is numeric
+ */
+function _ie_meta_tag_is_numeric($element, &$form_state) {
+  if (!empty($element['#value']) && !is_numeric($element['#value'])) {
+    form_error($element, t('The "!name" option must contain a valid number. You may either leave the text field empty or enter a string like "-99999", "20" or "10000".', array('!name' => t($element['title']))));
+  }
 
 
 ###########################################################
