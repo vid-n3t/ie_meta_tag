@@ -1,23 +1,6 @@
 <?php
 // ie_meta_tag.module #D7
 
-/**
-Great discusion: http://stackoverflow.com/questions/6771258/whats-the-difference-if-meta-http-equiv-x-ua-compatible-content-ie-edge
-Inject
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-or just use this (apache)
-Header set X-UA-Compatible "IE=Edge";
-or for (nginx)
-add_header X-UA-Compatible "IE=Edge";
-
-If you also want to allow users to leverage the IE chrome plug in, you could append ',chrome=1' to the above:
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-or just use this (apache)
-Header set X-UA-Compatible "IE=Edge,chrome=1";
-or for (nginx)
-add_header X-UA-Compatible "IE=Edge,chrome=1";
-*/
-
 #############################
 # Inject the head meta data #
 #############################
@@ -31,32 +14,33 @@ add_header X-UA-Compatible "IE=Edge,chrome=1";
 if(variable_get('ie_meta_tag_enabled', TRUE)){
   function ie_meta_tag_preprocess_html(&$vars) {
     // Setup IE meta tag to force IE rendering mode
-    $ie_meta_tag_render = array(
-      '#type' => 'html_tag',
-      '#tag' => 'meta',
-      '#attributes' => array(
-        'content' =>  'IE=edge,chrome=1',
-        'http-equiv' => 'X-UA-Compatible',
-      ),
-      '#weight' => '-99999',
-    );
-    // Add header meta tag for IE to head
-    drupal_add_html_head($ie_meta_tag_render, 'ie_meta_tag_render');
+    //Vars:
+    $ie_meta_tag_ie_flavor = variable_get('ie_meta_tag_ie_flavor', 'IE=edge');
+    $ie_meta_tag_ie_chrome_option = variable_get('ie_meta_tag_ie_chrome_option', 'none');
+    //concat the options if chrome isn't 'none'
+    $ie_meta_tag_content = ( $ie_meta_tag_ie_chrome_option !== 'none' )?$ie_meta_tag_ie_flavor. ',' . $ie_meta_tag_ie_chrome_option):$ie_meta_tag_ie_flavor;
+
+    switch( variable_get('ie_meta_tag_method', 'meta_tag') ) {
+      case 'meta_tag':
+        $ie_meta_tag_weight = variable_get('ie_meta_tag_weight','-99999');
+
+        $ie_meta_tag_render = array(
+          '#type' => 'html_tag',
+          '#tag' => 'meta',
+          '#attributes' => array(
+            'content' =>  $ie_meta_tag_content,
+            'http-equiv' => 'X-UA-Compatible',
+          ),
+          '#weight' => $ie_meta_tag_weight,
+        );
+        // Add header meta tag for IE to head
+        drupal_add_html_head($ie_meta_tag_render, 'ie_meta_tag_render');
+      break;
+      case 'php':
+        header("X-UA-Compatible: $ie_meta_tag_content");
+      break;
+    }//end switch( variable_get('ie_meta_tag_method', 'meta_tag') )
   }//end function ie_meta_tag_preprocess_html(&$vars)
-
-/*
-  - Check for what type of method to use when appending the head (tag insertion or php apache Header || nginx add_header
-  - Check for version of ie to use
-  - Check for chome option
-
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />//,chrome=1
-  or just use this (apache)
-  Header set X-UA-Compatible "IE=Edge";//,chrome=1
-  or for (nginx)
-  add_header X-UA-Compatible "IE=Edge";//,chrome=1
-*/
-
-
 }//end if(variable_get('ie_meta_tag_enabled', TRUE))
 
 
@@ -116,12 +100,11 @@ function _ie_meta_tag_settings_form() {
     '#type' => 'select',
     '#title' => t('Injection Method'),
     '#options' => array(
-      'meta_tag' => t('Inject IE meta tag'),
-      'apache' => t('Use Apache Header method'),
-      'nginx' => t('Use nginx add_header method'),
+      'meta_tag' => t('Inject IE meta tag with drupal_add_html_head'),
+      'php' => t('Use the PHP header method'),
     ),
     '#default_value' => variable_get('ie_meta_tag_method', 'meta_tag'),
-    '#description' => t('Choose the type of method to use when affecting the html head'),
+    '#description' => t('Choose the type of method to use when affecting the html head. Other options not supported here: Server-side (Apache, .htaccess).'),
   );
 
   $form['ie_meta_tag_ie_flavor'] = array(
