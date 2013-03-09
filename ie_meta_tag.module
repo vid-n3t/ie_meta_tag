@@ -120,7 +120,7 @@ function _ie_meta_tag_settings_form() {
       'apache' => t('Use Apache Header method'),
       'nginx' => t('Use nginx add_header method'),
     ),
-    '#default_value' => variable_get('ie_meta_tag_method', 0),
+    '#default_value' => variable_get('ie_meta_tag_method', 'meta_tag'),
     '#description' => t('Choose the type of method to use when affecting the html head'),
   );
 
@@ -139,7 +139,7 @@ function _ie_meta_tag_settings_form() {
       'IE=EmulateIE7' => t('IE=EmulateIE7'),
       'IE=5' => t('IE=5'),
     ),
-    '#default_value' => variable_get('ie_meta_tag_ie_flavor', 0),
+    '#default_value' => variable_get('ie_meta_tag_ie_flavor', 'IE=edge'),
     '#description' => t('Choose the flavor of IE tag to update the html head. ' . l(t('Interesting on stackoverflow'), 'http://stackoverflow.com/questions/6771258/whats-the-difference-if-meta-http-equiv-x-ua-compatible-content-ie-edge', array('attributes' => array('target'=>'_blank')))),
   );
 
@@ -152,7 +152,7 @@ function _ie_meta_tag_settings_form() {
       'chrome=IE7' => t('chrome=IE7 - Active for IE major version 7 or lower'),
       'chrome=IE8' => t('chrome=IE8 - Active for IE major version 8 or lower'),
     ),
-    '#default_value' => variable_get('ie_meta_tag_ie_chrome_option', 0),
+    '#default_value' => variable_get('ie_meta_tag_ie_chrome_option', 'none'),
     '#description' => t('Choose a chome option or leave it set to none. ' . l(t('More info on chromium.org'), 'http://www.chromium.org/developers/how-tos/chrome-frame-getting-started', array('attributes' => array('target'=>'_blank')))),
   );
 
