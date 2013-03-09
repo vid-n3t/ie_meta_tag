@@ -26,7 +26,17 @@ add_header X-UA-Compatible "IE=Edge,chrome=1";
  */
 function ie_meta_tag_theme($existing, $type, $theme, $path) {
   if(variable_get('ie_meta_tag_enabled', TRUE)){
+    /*
+      - Check for what type of method to use when appending the head (tag insertion or php apache Header || nginx add_header
+      - Check for version of ie to use
+      - Check for chome option
 
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />//,chrome=1
+      or just use this (apache)
+      Header set X-UA-Compatible "IE=Edge";//,chrome=1
+      or for (nginx)
+      add_header X-UA-Compatible "IE=Edge";//,chrome=1
+    */
   }//end if(variable_get('ie_meta_tag_enabled', TRUE))
 }//function ie_meta_tag_theme
 
