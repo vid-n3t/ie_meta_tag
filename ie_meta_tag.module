@@ -1,5 +1,13 @@
 <?php
-// ie_meta_tag.module #D7
+/**
+ * ie_meta_tag.module
+ * Drupal Version Compatibility: D7
+ *
+ * Todo: 
+ * Run through coder
+ * Test functionality
+ *
+ */
 
 #############################
 # Inject the head meta data #
