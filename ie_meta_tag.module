@@ -158,7 +158,7 @@ function _ie_meta_tag_settings_form() {
       'IE=5' => t('IE=5'),
     ),
     '#default_value' => variable_get('ie_meta_tag_ie_flavor', 'IE=edge'),
-    '#description' => t('Choose the flavor of IE tag to update the html head. ' . l(t('Interesting on stackoverflow'), 'http://stackoverflow.com/questions/6771258/whats-the-difference-if-meta-http-equiv-x-ua-compatible-content-ie-edge', array('attributes' => array('target'=>'_blank')))),
+    '#description' => t('Choose the flavor of IE tag to update the html head. ' . l(t('Interesting on stackoverflow'), 'http://stackoverflow.com/questions/6771258/whats-the-difference-if-meta-http-equiv-x-ua-compatible-content-ie-edge', array('attributes' => array('target' => '_blank')))),
   );
 
   $form['ie_meta_tag_ie_chrome_option'] = array(
@@ -171,7 +171,7 @@ function _ie_meta_tag_settings_form() {
       'chrome=IE8' => t('chrome=IE8 - Active for IE major version 8 or lower'),
     ),
     '#default_value' => variable_get('ie_meta_tag_ie_chrome_option', 'none'),
-    '#description' => t('Choose a chome option or leave it set to none. ' . l(t('More info on chromium.org'), 'http://www.chromium.org/developers/how-tos/chrome-frame-getting-started', array('attributes' => array('target'=>'_blank')))),
+    '#description' => t('Choose a chome option or leave it set to none. ' . l(t('More info on chromium.org'), 'http://www.chromium.org/developers/how-tos/chrome-frame-getting-started', array('attributes' => array('target' => '_blank')))),
   );
 
   $form['ie_meta_tag_weight'] = array(
@@ -237,8 +237,8 @@ function ie_meta_tag_debug_log($errMsgArr, $errLabel='ie_meta_tag', $errSeverity
         drupal_set_message(filter_xss($errMsg), check_plain($errSeverity));
       }//end if
       if ( variable_get('ie_meta_tag_debug_reporting', FALSE) || $force ) {
-        #watchdog($errLabel,$errMsgArr);
-        watchdog($errLabel,$errMsg,array(),array_search($errSeverity,$watchdog_levels));
+        #watchdog($errLabel, $errMsgArr);
+        watchdog($errLabel, $errMsg, array(), array_search($errSeverity, $watchdog_levels));
       }//end if
     }//end loop
   }//end if $errMsgArr
