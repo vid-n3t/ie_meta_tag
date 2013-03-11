@@ -9,9 +9,7 @@
  *
  */
 
-#############################
-# Inject the head meta data #
-#############################
+//Inject the head meta data
 /**
  * Preprocesses the wrapping HTML.
  *
@@ -51,10 +49,6 @@ if(variable_get('ie_meta_tag_enabled', TRUE)) {
   }//end function ie_meta_tag_preprocess_html(&$vars)
 }//end if(variable_get('ie_meta_tag_enabled', TRUE))
 
-
-###########################################################
-# Help                                                    #
-###########################################################
 /**
  * Implements hook_help().
  *
@@ -99,7 +93,7 @@ function ie_meta_tag_menu() {
   );
 
   return $items;
-}// end function ie_meta_tag_menu() {
+}// end function ie_meta_tag_menua
 
 /**
  * Page callback for admin/config/devleopment/ie_meta_tag.
@@ -184,7 +178,7 @@ function _ie_meta_tag_settings_form() {
   );
 
   return $form;
-}//end function _ie_meta_tag_settings_form()
+}//end function _ie_meta_tag_settings_form
 
 /**
  * Helper to produce ie_meta_tag debug configuration.
@@ -244,9 +238,7 @@ function ie_meta_tag_debug_log($errMsgArr, $errLabel='ie_meta_tag', $errSeverity
   }//end if $errMsgArr
 }//function _ie_meta_tag_debug_form()
 
-###########################################################
-# Validation Functions                                    #
-###########################################################
+//Validation Functions
 /**
  * function _ie_meta_tag_is_numeric($element, &$form_state)
  * Validate if an entry is numeric
