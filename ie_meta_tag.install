@@ -11,10 +11,10 @@
  */
 function ie_meta_tag_uninstall() {
   variable_del('ie_meta_tag_enabled');
-  variable_del('ie_meta_tag_method'),
-  variable_del('ie_meta_tag_ie_flavor'),
-  variable_del('ie_meta_tag_ie_chrome_option')
-  variable_del('ie_meta_tag_weight')
+  variable_del('ie_meta_tag_method');
+  variable_del('ie_meta_tag_ie_flavor');
+  variable_del('ie_meta_tag_ie_chrome_option');
+  variable_del('ie_meta_tag_weight');
   variable_del('ie_meta_tag_debug_message');
   variable_del('ie_meta_tag_debug_reporting');
 }
