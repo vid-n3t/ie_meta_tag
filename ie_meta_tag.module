@@ -74,8 +74,35 @@ function ie_meta_tag_help($path, $arg) {
   }
 }
 
+
 /**
- * Page callback for admin/settings/peopleie_meta_tag.
+ * Implements hook_menu()
+ *
+ * @param items
+ *   An array holding the path to our configuration form
+ *
+ * function ie_meta_tag_menu
+ * Notes: When user types something into a specified textfield, Drupal sends a request via this url to
+ * send data you input and to receive suggestions via json if there are any. To make Drupal
+ * aware of this path, let’s add it to the menu system:
+ */
+function ie_meta_tag_menu() {
+  ie_meta_tag_debug_log('Running function ie_meta_tag_menu');
+  $items = array();
+  $items['admin/config/development/ie_meta_tag'] = array(
+    'title' => 'IE Meta Tag Injection',
+    'description' => 'IE Meta Tag Injection module.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ie_meta_tag_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+ return $items;
+}// end function ie_meta_tag_menu() {
+
+/**
+ * Page callback for admin/config/devleopment/ie_meta_tag.
  *
  * @see ie_meta_tag_menu()
  */
