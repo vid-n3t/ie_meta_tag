@@ -1,10 +1,7 @@
 <?php
 /**
  * @file
- * ie_meta_tag.module includes settings and hooks for injecting ie meta tag into the doc head
- *
- * The theme system allows for nearly all output of the Drupal system to be
- * customized by user themes.
+ * ie_meta_tag.module includes settings and hooks for injecting the IE meta tag into the doc head
  */
 
 //Inject the head meta data
@@ -68,7 +65,7 @@ function ie_meta_tag_help($path, $arg) {
 
 
 /**
- * Implements hook_menu()
+ * Implements hook_menu().
  *
  * @param items
  *   An array holding the path to our configuration form
@@ -224,13 +221,13 @@ function ie_meta_tag_debug_log($err_msg_arr, $err_label='ie_meta_tag', $err_seve
       //$err_msg_arr = implode(',', $err_msg_arr);
       $err_msg_arr = array($err_msg_arr);
     }//end if ( ! is_array($err_msg_arr) )
-    foreach ( $err_msg_arr as $errMsg ) {
+    foreach ( $err_msg_arr as $err_msg ) {
       if ( variable_get('ie_meta_tag_debug_message', FALSE) || $force ) {
-        drupal_set_message(filter_xss($errMsg), check_plain($err_severity));
+        drupal_set_message(filter_xss($err_msg), check_plain($err_severity));
       }//end if
       if ( variable_get('ie_meta_tag_debug_reporting', FALSE) || $force ) {
         //watchdog($err_label, $err_msg_arr);
-        watchdog($err_label, $errMsg, array(), array_search($err_severity, $watchdog_levels));
+        watchdog($err_label, $err_msg, array(), array_search($err_severity, $watchdog_levels));
       }//end if
     }//end loop
   }//end if $err_msg_arr
