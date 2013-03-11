@@ -253,6 +253,6 @@ function ie_meta_tag_debug_log($errMsgArr, $errLabel='ie_meta_tag', $errSeverity
  */
 function _ie_meta_tag_is_numeric($element, &$form_state) {
   if (!empty($element['#value']) && !is_numeric($element['#value'])) {
-    form_error($element, t('The "!name" option must contain a valid number. You may either leave the text field empty or enter a string like "-99999", "20" or "10000".', array('!name' => filter_xss($element['title']))));
+    form_error($element, t('The "!name" option must contain a valid number. You may either leave the text field empty or enter a string like "-99999", "20" or "10000".', array('!name' => filter_xss(check_plain($element['title'])))));
   }
 }
