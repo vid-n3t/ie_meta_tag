@@ -19,18 +19,18 @@
  *   Template variables.
  * ref: http://api.drupal.org/comment/18004#comment-18004
  */
-if(variable_get('ie_meta_tag_enabled', TRUE)){
+if(variable_get('ie_meta_tag_enabled', TRUE)) {
   function ie_meta_tag_preprocess_html(&$vars) {
     // Setup IE meta tag to force IE rendering mode
     //Vars:
     $ie_meta_tag_ie_flavor = variable_get('ie_meta_tag_ie_flavor', 'IE=edge');
     $ie_meta_tag_ie_chrome_option = variable_get('ie_meta_tag_ie_chrome_option', 'none');
     //concat the options if chrome isn't 'none'
-    $ie_meta_tag_content = ( $ie_meta_tag_ie_chrome_option !== 'none' )?$ie_meta_tag_ie_flavor. ',' . $ie_meta_tag_ie_chrome_option:$ie_meta_tag_ie_flavor;
+    $ie_meta_tag_content = ( $ie_meta_tag_ie_chrome_option !== 'none' )?$ie_meta_tag_ie_flavor . ',' . $ie_meta_tag_ie_chrome_option:$ie_meta_tag_ie_flavor;
 
-    switch( variable_get('ie_meta_tag_method', 'meta_tag') ) {
+    switch ( variable_get('ie_meta_tag_method', 'meta_tag') ) {
       case 'meta_tag':
-        $ie_meta_tag_weight = variable_get('ie_meta_tag_weight','-99999');
+        $ie_meta_tag_weight = variable_get('ie_meta_tag_weight', '-99999');
 
         $ie_meta_tag_render = array(
           '#type' => 'html_tag',
@@ -47,7 +47,7 @@ if(variable_get('ie_meta_tag_enabled', TRUE)){
       case 'php':
         header("X-UA-Compatible: $ie_meta_tag_content");
       break;
-    }//end switch( variable_get('ie_meta_tag_method', 'meta_tag') )
+    }//end switch ( variable_get('ie_meta_tag_method', 'meta_tag') )
   }//end function ie_meta_tag_preprocess_html(&$vars)
 }//end if(variable_get('ie_meta_tag_enabled', TRUE))
 
@@ -177,7 +177,7 @@ function _ie_meta_tag_settings_form() {
   $form['ie_meta_tag_weight'] = array(
     '#type' => 'textfield',
     '#title' => t('Weight'),
-    '#default_value' => variable_get('ie_meta_tag_weight','-99999'),
+    '#default_value' => variable_get('ie_meta_tag_weight', '-99999'),
     '#description' => t('Choose the weight of the meta tag. Choose a positive or negative number (integer or decimal). Some experience suggests that this tag must be the first one for it to be effective. The Default is -99999.'),
     '#size' => 10,
     '#element_validate' => array('_ie_meta_tag_weight_is_numeric'),
@@ -228,12 +228,12 @@ function _ie_meta_tag_debug_form() {
 function ie_meta_tag_debug_log($errMsgArr, $errLabel='ie_meta_tag', $errSeverity='status', $force=FALSE) {
   $watchdog_levels=watchdog_severity_levels();
   if ( $errMsgArr ) {
-    if ( ! is_array($errMsgArr) && $errMsgArr !== ""){
+    if ( ! is_array($errMsgArr) && $errMsgArr !== "") {
       #$errMsgArr = implode(',', $errMsgArr);
       $errMsgArr = array($errMsgArr);
     }//end if ( ! is_array($errMsgArr) )
     foreach ( $errMsgArr as $errMsg ) {
-      if ( variable_get('ie_meta_tag_debug_message', FALSE) || $force ){
+      if ( variable_get('ie_meta_tag_debug_message', FALSE) || $force ) {
         drupal_set_message(filter_xss($errMsg), check_plain($errSeverity));
       }//end if
       if ( variable_get('ie_meta_tag_debug_reporting', FALSE) || $force ) {
