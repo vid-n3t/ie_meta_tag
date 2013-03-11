@@ -234,7 +234,7 @@ function ie_meta_tag_debug_log($errMsgArr, $errLabel='ie_meta_tag', $errSeverity
     }//end if ( ! is_array($errMsgArr) )
     foreach ( $errMsgArr as $errMsg ) {
       if ( variable_get('ie_meta_tag_debug_message', FALSE) || $force ){
-        drupal_set_message(t(filter_xss($errMsg)), check_plain($errSeverity));
+        drupal_set_message(filter_xss($errMsg), check_plain($errSeverity));
       }//end if
       if ( variable_get('ie_meta_tag_debug_reporting', FALSE) || $force ) {
         #watchdog($errLabel,$errMsgArr);
@@ -253,6 +253,6 @@ function ie_meta_tag_debug_log($errMsgArr, $errLabel='ie_meta_tag', $errSeverity
  */
 function _ie_meta_tag_is_numeric($element, &$form_state) {
   if (!empty($element['#value']) && !is_numeric($element['#value'])) {
-    form_error($element, t('The "!name" option must contain a valid number. You may either leave the text field empty or enter a string like "-99999", "20" or "10000".', array('!name' => t(filter_xss($element['title'])))));
+    form_error($element, t('The "!name" option must contain a valid number. You may either leave the text field empty or enter a string like "-99999", "20" or "10000".', array('!name' => filter_xss($element['title']))));
   }
 }
