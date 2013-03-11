@@ -3,7 +3,7 @@
  * ie_meta_tag.module
  * Drupal Version Compatibility: D7
  *
- * Todo: 
+ * Todo:
  * Run through coder
  * Test functionality
  *
@@ -84,7 +84,7 @@ function ie_meta_tag_help($path, $arg) {
  * function ie_meta_tag_menu
  * Notes: When user types something into a specified textfield, Drupal sends a request via this url to
  * send data you input and to receive suggestions via json if there are any. To make Drupal
- * aware of this path, let’s add it to the menu system:
+ * aware of this path, let's add it to the menu system:
  */
 function ie_meta_tag_menu() {
   ie_meta_tag_debug_log('Running function ie_meta_tag_menu');
