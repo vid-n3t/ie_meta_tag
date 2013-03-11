@@ -17,8 +17,8 @@
  *   Template variables.
  * ref: http://api.drupal.org/comment/18004#comment-18004
  */
-if(variable_get('ie_meta_tag_enabled', TRUE)) {
-  function ie_meta_tag_preprocess_html(&$vars) {
+function ie_meta_tag_preprocess_html(&$vars) {
+  if(variable_get('ie_meta_tag_enabled', TRUE)) {
     // Setup IE meta tag to force IE rendering mode
     //Vars:
     $ie_meta_tag_ie_flavor = variable_get('ie_meta_tag_ie_flavor', 'IE=edge');
@@ -46,8 +46,8 @@ if(variable_get('ie_meta_tag_enabled', TRUE)) {
         header("X-UA-Compatible: $ie_meta_tag_content");
       break;
     }//end switch ( variable_get('ie_meta_tag_method', 'meta_tag') )
-  }//end function ie_meta_tag_preprocess_html(&$vars)
-}//end if(variable_get('ie_meta_tag_enabled', TRUE))
+  }//end if(variable_get('ie_meta_tag_enabled', TRUE))
+}//end function ie_meta_tag_preprocess_html(&$vars)
 
 /**
  * Implements hook_help().
@@ -216,26 +216,26 @@ function _ie_meta_tag_debug_form() {
 /**
  * Helper to output debug messages.
  *
- * ie_meta_tag_debug_log($errMsgArr(array), [$errLabel(string)='ie_meta_tag', $errSeverity(string)='status|warning|error', $force(bool)=FALSE])
+ * ie_meta_tag_debug_log($err_msg_arr(array), [$err_label(string)='ie_meta_tag', $err_severity(string)='status|warning|error', $force(bool)=FALSE])
  *
  */
-function ie_meta_tag_debug_log($errMsgArr, $errLabel='ie_meta_tag', $errSeverity='status', $force=FALSE) {
+function ie_meta_tag_debug_log($err_msg_arr, $err_label='ie_meta_tag', $err_severity='status', $force=FALSE) {
   $watchdog_levels=watchdog_severity_levels();
-  if ( $errMsgArr ) {
-    if ( ! is_array($errMsgArr) && $errMsgArr !== "") {
-      #$errMsgArr = implode(',', $errMsgArr);
-      $errMsgArr = array($errMsgArr);
-    }//end if ( ! is_array($errMsgArr) )
-    foreach ( $errMsgArr as $errMsg ) {
+  if ( $err_msg_arr ) {
+    if ( ! is_array($err_msg_arr) && $err_msg_arr !== "") {
+      //$err_msg_arr = implode(',', $err_msg_arr);
+      $err_msg_arr = array($err_msg_arr);
+    }//end if ( ! is_array($err_msg_arr) )
+    foreach ( $err_msg_arr as $errMsg ) {
       if ( variable_get('ie_meta_tag_debug_message', FALSE) || $force ) {
-        drupal_set_message(filter_xss($errMsg), check_plain($errSeverity));
+        drupal_set_message(filter_xss($errMsg), check_plain($err_severity));
       }//end if
       if ( variable_get('ie_meta_tag_debug_reporting', FALSE) || $force ) {
-        #watchdog($errLabel, $errMsgArr);
-        watchdog($errLabel, $errMsg, array(), array_search($errSeverity, $watchdog_levels));
+        //watchdog($err_label, $err_msg_arr);
+        watchdog($err_label, $errMsg, array(), array_search($err_severity, $watchdog_levels));
       }//end if
     }//end loop
-  }//end if $errMsgArr
+  }//end if $err_msg_arr
 }//function _ie_meta_tag_debug_form()
 
 //Validation Functions
