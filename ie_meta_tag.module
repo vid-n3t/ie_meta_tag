@@ -98,7 +98,7 @@ function ie_meta_tag_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
- return $items;
+  return $items;
 }// end function ie_meta_tag_menu() {
 
 /**
