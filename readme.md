@@ -4,7 +4,7 @@
 
 ### Current maintainers:
 
-* Vid Rowan ([_vid](http://drupal.org/user/631512/))
+* Vid Rowan ([\_vid](http://drupal.org/user/631512/))
 
 ## Drupal Version
 
@@ -15,9 +15,9 @@ The ie_meta_tag module injects the ie meta data into the documents html head.
 
 ## Scope: How and what this module does
 
-* Uses hook_theme to inject the meta data when the theme data is being processed. 
-* Uses hook_help to provide information about the module to the site admin
-* Uses drupal_set_message to push some debugging messages to the screen. These should be commented out on a live site
+* Uses hook\_theme to inject the meta data when the theme data is being processed. 
+* Uses hook\_help to provide information about the module to the site admin
+* Uses drupal\_set\_message to push some debugging messages to the screen. These should be commented out on a live site
 
 ## Requirements
 
@@ -25,7 +25,7 @@ The ie_meta_tag module injects the ie meta data into the documents html head.
 
 ## Installation
 
-* Install module as usual, see [Installing contributed modules](http://drupal.org/node/70151
+* Install module as usual, see [Installing contributed modules](http://drupal.org/node/70151)
   for further information.
 
 ## Usage
